@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import MapKit
 import Starscream
 
 ///--------------------------------------------------------
@@ -72,6 +73,7 @@ final class MainViewController: UIViewController {
     private func basicSetup() -> Void {
         networkingManager = NetworkingManager.shared
         networkingManager.delegate = self
+        networkingManager.setupLocationManager()
         
         captureManager = CaptureManager.shared
         captureManager.requestAuthorization()

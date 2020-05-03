@@ -10,9 +10,11 @@ import Foundation
 import AVFoundation
 import Network
 import Starscream
+import MapKit
 
 
 protocol NetworkManaging: AVCaptureVideoDataOutputSampleBufferDelegate {
+    var locationManager: CLLocationManager { get }
     
     var monitorQueue: DispatchQueue { get }
     var notifyQueue: DispatchQueue { get }
@@ -24,6 +26,7 @@ protocol NetworkManaging: AVCaptureVideoDataOutputSampleBufferDelegate {
     
     func setupConnection() -> Void
     func terminateConnection() -> Void
+    func setupLocationManager() -> Void
     
 }
 

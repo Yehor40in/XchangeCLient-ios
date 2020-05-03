@@ -45,6 +45,7 @@ final class CaptureManager: CaptureManaging {
             AVCaptureDevice.requestAccess(for: .video) { [weak self] granted in
                 if granted {
                     self?.setupCaptureSession()
+                    self?.startCapture()
                 }
             }
         default:
@@ -83,13 +84,14 @@ final class CaptureManager: CaptureManaging {
                     
                     videoConnection = output.connection(with: .video)
                     session.commitConfiguration()
-                    
                     return true
                 }
             }
+            session.commitConfiguration()
             return false
         } catch let error {
             print(error.localizedDescription)
+            session.commitConfiguration()
             return false
         }
     }

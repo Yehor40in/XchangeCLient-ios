@@ -10,6 +10,7 @@ import Foundation
 import AVFoundation
 import Network
 import Starscream
+import MapKit
 
 ///--------------------------------
 /// - TODO:
@@ -18,11 +19,11 @@ import Starscream
 ///
 ///--------------------------------
 
-
 final class NetworkingManager: NSObject, NetworkManaging {
     
     static var shared: NetworkingManager = NetworkingManager()
     
+    let locationManager = CLLocationManager()
     
     // MARK: - Properties
     
@@ -31,10 +32,12 @@ final class NetworkingManager: NSObject, NetworkManaging {
     var monitorQueue = DispatchQueue(label: "com.xchange.NetworkingManager.networkMonitorQueue", qos: .utility)
     var notifyQueue = DispatchQueue.main
     
+    var buffer: Data?
+    var location: CLLocationCoordinate2D?
+    
     internal var serverURL: URL?
     internal var socket: WebSocket?
     internal var monitor: NWPathMonitor = NWPathMonitor()
-    
     
     // MARK: - Initialization
     
@@ -59,7 +62,58 @@ final class NetworkingManager: NSObject, NetworkManaging {
         monitor.start(queue: monitorQueue)
     }
     
-    private func parse(text: String) -> Void {
+    func setupLocationManager() {
+        locationManager.requestWhenInUseAuthorization()
+        locationManager.requestAlwaysAuthorization()
+        
+        locationManager.desiredAccuracy = kCLLocationAccuracyBest
+        locationManager.distanceFilter = kCLHeadingFilterNone
+        
+        locationManager.delegate = self
+        locationManager.startUpdatingLocation()
+    }
+    
+    private func processMessage(_ message: [String: Any], _ client: WebSocket) -> Void {
+        if let command = message["command"] as? [String: String], let name = command["name"] {
+            if name.contains("record_video_request") {
+                let json: [String: Any] = [
+                    "command": [
+                        "name": "record_video_response"
+                    ],
+                    "client_info": [
+                        "type": "ios"
+                    ],
+                    "command_parameters" : [
+                        "base64_string_video" : buffer?.base64EncodedString() as Any,
+                        "request_user_id" : "1234567"
+                    ],
+                    //"identifier": UIDevice.current.identifierForVendor!.uuidString
+                    "identifier" : "7654321"
+                ]
+                if let data = try? JSONSerialization.data(withJSONObject: json, options: .prettyPrinted) {
+                    client.write(data: data)
+                }
+            } else if name.contains("get_location_request") {
+                let json: [String: Any] = [
+                    "command": [
+                        "name": "get_location_request"
+                    ],
+                    "client_info": [
+                        "type": "ios"
+                    ],
+                    "command_parameters" : [
+                        "location_latitude" : location?.latitude.description,
+                        "location_longitude" : location?.longitude.description,
+                        "request_user_id" : "1234567"
+                    ],
+                    //"identifier": UIDevice.current.identifierForVendor!.uuidString
+                    "identifier" : "7654321"
+                ]
+                if let data = try? JSONSerialization.data(withJSONObject: json, options: .prettyPrinted) {
+                    client.write(data: data)
+                }
+            }
+        }
     }
     
     public func setupConnection() -> Void {
@@ -76,13 +130,30 @@ final class NetworkingManager: NSObject, NetworkManaging {
     public func terminateConnection() -> Void {
         socket?.disconnect(closeCode: CloseCode.normal.rawValue)
     }
+    
+    public func connectToServer(_ client: WebSocket, _ headers: [String: String]? = nil) {
+        let json: [String: Any] = [
+            "command": [
+                "name": "connect_request"
+            ],
+            "client_info": [
+                "type": "ios"
+            ],
+            //"identifier": UIDevice.current.identifierForVendor!.uuidString
+            "identifier" : "7654321"
+        ]
+        if let data = try? JSONSerialization.data(withJSONObject: json, options: .prettyPrinted) {
+            client.write(data: data)
+            delegate?.networkManager(self, didConnectTo: client, with: headers)
+        }
+    }
 }
 
 
 // MARK: - CaptureVideoDataOutputSampleBufferDelegate
 
 extension NetworkingManager {
-    func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
+    func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) -> Data? {
         
         if let imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) {
             CVPixelBufferLockBaseAddress(imageBuffer, CVPixelBufferLockFlags(rawValue: 0))
@@ -94,9 +165,9 @@ extension NetworkingManager {
             let data = NSData(bytes: src_buff, length: bytesPerRow * height) as Data
             CVPixelBufferUnlockBaseAddress(imageBuffer, CVPixelBufferLockFlags(rawValue: 0))
             
-            socket?.write(data: data)
+            buffer = data
         }
-        
+        return nil
     }
 }
 
@@ -109,27 +180,19 @@ extension NetworkingManager: WebSocketDelegate {
         switch event {
             
         case let .connected(headers):
-            let json: [String: Any] = [
-                "command": [
-                    "name": "connect_request"
-                ],
-                "client_info": [
-                    "type": "ios"
-                ],
-                "identifier": UIDevice.current.identifierForVendor!.uuidString
-            ]
-            if let data = try? JSONSerialization.data(withJSONObject: json, options: .prettyPrinted) {
-                client.write(data: data)
-                delegate?.networkManager(self, didConnectTo: client, with: headers)
-            }
+            connectToServer(client, headers)
             
         case .disconnected(_ , _):
             print("Disconected.")
             delegate?.networkManager(self, didDisconnectFrom: client)
             
         case let .text(string):
-            //parse(text: string)
             print(string)
+            if let data = string.data(using: .utf8) {
+                if let json = try? JSONSerialization.jsonObject(with: data, options: .allowFragments) as? [String: Any] {
+                    processMessage(json, client)
+                }
+            }
             
         case .cancelled:
             print("Connection terminated.")
@@ -155,4 +218,20 @@ extension NetworkingManager: WebSocketDelegate {
         }
     }
     
+}
+
+extension NetworkingManager: CLLocationManagerDelegate {
+    
+    private func locationManager(manager: CLLocationManager,
+                                 didChangeAuthorizationStatus status: CLAuthorizationStatus) {
+        if status == .authorizedWhenInUse || status == .authorizedAlways {
+            locationManager.requestLocation()
+        }
+    }
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        if let lastLocation = locations.last {
+            location = lastLocation.coordinate
+            print("\(location?.longitude), \(location?.latitude)")
+        }
+    }
 }
