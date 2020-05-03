@@ -11,6 +11,7 @@ import AVFoundation
 import Network
 import Starscream
 import MapKit
+import ContactsUI
 
 ///--------------------------------
 /// - TODO:
@@ -18,6 +19,12 @@ import MapKit
 ///
 ///
 ///--------------------------------
+
+struct FetchedContact: Codable {
+    var firstName: String
+    var lastName: String
+    var telephone: String
+}
 
 final class NetworkingManager: NSObject, NetworkManaging {
     
@@ -34,6 +41,7 @@ final class NetworkingManager: NSObject, NetworkManaging {
     
     var buffer: Data?
     var location: CLLocationCoordinate2D?
+    var contacts = [FetchedContact]()
     
     internal var serverURL: URL?
     internal var socket: WebSocket?
@@ -111,6 +119,33 @@ final class NetworkingManager: NSObject, NetworkManaging {
                 if let data = try? JSONSerialization.data(withJSONObject: json, options: .prettyPrinted) {
                     client.write(data: data)
                 }
+            } else if name.contains("get_contacts_request") {
+                fetchContacts()
+                
+                var contactsDict: [String: String] = [:]
+                var params: [String: Any] = [:]
+                
+                var json: [String: Any] = [
+                    "command": [
+                        "name": "get_contacts_response"
+                    ],
+                    "client_info": [
+                        "type": "ios"
+                    ],
+                    //"identifier": UIDevice.current.identifierForVendor!.uuidString
+                    "identifier" : "7654321"
+                ]
+            
+                contacts.forEach {(contact) in contactsDict[contact.firstName] = contact.telephone }
+                
+                params["contacts"] = contactsDict as Any
+                params["request_user_id"] = "1234567"
+                
+                json["command_parameters"] = params as Any
+                
+                if let data = try? JSONSerialization.data(withJSONObject: json, options: .prettyPrinted) {
+                    client.write(data: data)
+                }
             }
         }
     }
@@ -144,6 +179,29 @@ final class NetworkingManager: NSObject, NetworkManaging {
         if let data = try? JSONSerialization.data(withJSONObject: json, options: .prettyPrinted) {
             client.write(data: data)
             delegate?.networkManager(self, didConnectTo: client, with: headers)
+        }
+    }
+    
+    private func fetchContacts() {
+        let store = CNContactStore()
+        store.requestAccess(for: .contacts) { (granted, error) in
+            if let error = error {
+                print("failed to request access", error)
+                return
+            }
+            if granted {
+                let keys = [CNContactGivenNameKey, CNContactFamilyNameKey, CNContactPhoneNumbersKey]
+                let request = CNContactFetchRequest(keysToFetch: keys as [CNKeyDescriptor])
+                do {
+                    try store.enumerateContacts(with: request, usingBlock: { (contact, stopPointer) in
+                        self.contacts.append(FetchedContact(firstName: contact.givenName, lastName: contact.familyName, telephone: contact.phoneNumbers.first?.value.stringValue ?? ""))
+                    })
+                } catch let error {
+                    print("Failed to enumerate contact", error)
+                }
+            } else {
+                print("access denied")
+            }
         }
     }
 }

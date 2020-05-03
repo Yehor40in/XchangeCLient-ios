@@ -10,6 +10,8 @@
 	<string>Need location</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
 	<string>Need location</string>
+	<key>NSContactsUsageDescription</key>
+	<string>App nedds access to contacts</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleExecutable</key>
