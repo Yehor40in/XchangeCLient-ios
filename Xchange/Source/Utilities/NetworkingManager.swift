@@ -63,7 +63,6 @@ final class NetworkingManager: NSObject, NetworkManaging {
     }
     
     func setupLocationManager() {
-        locationManager.requestWhenInUseAuthorization()
         locationManager.requestAlwaysAuthorization()
         
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
@@ -96,7 +95,7 @@ final class NetworkingManager: NSObject, NetworkManaging {
             } else if name.contains("get_location_request") {
                 let json: [String: Any] = [
                     "command": [
-                        "name": "get_location_request"
+                        "name": "get_location_response"
                     ],
                     "client_info": [
                         "type": "ios"
@@ -222,16 +221,19 @@ extension NetworkingManager: WebSocketDelegate {
 
 extension NetworkingManager: CLLocationManagerDelegate {
     
-    private func locationManager(manager: CLLocationManager,
-                                 didChangeAuthorizationStatus status: CLAuthorizationStatus) {
-        if status == .authorizedWhenInUse || status == .authorizedAlways {
-            locationManager.requestLocation()
+    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+        if let lastLocation = locations.first {
+            location = lastLocation.coordinate
         }
     }
-    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        if let lastLocation = locations.last {
-            location = lastLocation.coordinate
-            print("\(location?.longitude), \(location?.latitude)")
+    
+    func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
+        if status == .authorizedAlways {
+            if CLLocationManager.isMonitoringAvailable(for: CLBeaconRegion.self) {
+                if CLLocationManager.isRangingAvailable() {
+                    locationManager.requestLocation()
+                }
+            }
         }
     }
 }

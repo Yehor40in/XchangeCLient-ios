@@ -4,12 +4,12 @@
 <dict>
 	<key>NSCameraUsageDescription</key>
 	<string>App needs your permission in order to use camera</string>
-	<key>NSLocationAlwaysUsageDescription</key>
+	<key>NSLocationUsageDescription</key>
 	<string>App needs your permission to track your location</string>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>App needs your permission to track your location</string>
+	<string>Need location</string>
 	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>App needs your permission to track your location</string>
+	<string>Need location</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleExecutable</key>

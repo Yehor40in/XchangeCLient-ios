@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import MapKit
 import Starscream
 
 ///--------------------------------------------------------
@@ -71,16 +70,16 @@ final class MainViewController: UIViewController {
     // MARK: - Setup
     
     private func basicSetup() -> Void {
-        networkingManager = NetworkingManager.shared
-        networkingManager.delegate = self
-        networkingManager.setupLocationManager()
-        
         captureManager = CaptureManager.shared
         captureManager.requestAuthorization()
         captureManager.output?.setSampleBufferDelegate(networkingManager, queue: captureManager.captureQueue)
         
         logManager = LogManager.standard
         logStorage = logManager.getData()
+        
+        networkingManager = NetworkingManager.shared
+        networkingManager.delegate = self
+        networkingManager.setupLocationManager()
     }
     
     private func setupNavigationItem() -> Void {
