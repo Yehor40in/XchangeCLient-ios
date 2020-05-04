@@ -77,7 +77,11 @@ final class LogCell: UITableViewCell {
         contentView.addSubview(dateLabel)
         contentView.addSubview(descriptionLabel)
         contentView.addSubview(statusLabel)
-        contentView.backgroundColor = UIColor.systemIndigo
+        if #available(iOS 13.0, *) {
+            contentView.backgroundColor = UIColor.systemIndigo
+        } else {
+            contentView.backgroundColor = UIColor.systemPurple
+        }
     }
     
     private func setupConstraints() -> Void {

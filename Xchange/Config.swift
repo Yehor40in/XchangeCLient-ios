@@ -64,6 +64,6 @@ extension Config {
         FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)[0].appendingPathComponent("log.json")
     }
     
-    static var serverURLString: String = "ws://127.0.0.1:8080"
+    static var serverURLString: String = "ws://192.168.1.12:8080"
     
 }

@@ -45,7 +45,9 @@ final class CaptureManager: CaptureManaging {
             AVCaptureDevice.requestAccess(for: .video) { [weak self] granted in
                 if granted {
                     self?.setupCaptureSession()
+                    print("0")
                     self?.startCapture()
+                    print("1")
                 }
             }
         default:
@@ -74,6 +76,7 @@ final class CaptureManager: CaptureManaging {
         session = AVCaptureSession()
         session.beginConfiguration()
         do {
+            
             if let device = AVCaptureDevice.default(for: .video) {
                 input = try AVCaptureDeviceInput(device: device)
                 output = AVCaptureVideoDataOutput()
@@ -81,7 +84,7 @@ final class CaptureManager: CaptureManaging {
                 if session.canAddInput(input) && session.canAddOutput(output) {
                     session.addInput(input)
                     session.addOutput(output)
-                    
+    
                     videoConnection = output.connection(with: .video)
                     session.commitConfiguration()
                     return true

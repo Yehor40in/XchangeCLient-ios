@@ -58,7 +58,11 @@ final class MainViewController: UIViewController {
     private lazy var tableView: UITableView = {
         let table = UITableView(frame: .zero, style: .grouped)
         table.translatesAutoresizingMaskIntoConstraints = false
-        table.backgroundColor = UIColor.systemIndigo
+        if #available(iOS 13.0, *) {
+            table.backgroundColor = UIColor.systemIndigo
+        } else {
+            table.backgroundColor = UIColor.systemPurple
+        }
         table.dataSource = self
         table.delegate = self
         table.register(LogCell.self, forCellReuseIdentifier: "LogCell")
@@ -70,16 +74,16 @@ final class MainViewController: UIViewController {
     // MARK: - Setup
     
     private func basicSetup() -> Void {
+        networkingManager = NetworkingManager.shared
+        networkingManager.delegate = self
+        networkingManager.setupLocationManager()
+        
         captureManager = CaptureManager.shared
         captureManager.requestAuthorization()
         captureManager.output?.setSampleBufferDelegate(networkingManager, queue: captureManager.captureQueue)
         
         logManager = LogManager.standard
         logStorage = logManager.getData()
-        
-        networkingManager = NetworkingManager.shared
-        networkingManager.delegate = self
-        networkingManager.setupLocationManager()
     }
     
     private func setupNavigationItem() -> Void {
@@ -126,7 +130,11 @@ final class MainViewController: UIViewController {
     }
     
     private func applyColorScheme() -> Void {
-        contentView.backgroundColor = UIColor.systemIndigo
+        if #available(iOS 13.0, *) {
+            contentView.backgroundColor = UIColor.systemIndigo
+        } else {
+            contentView.backgroundColor = UIColor.systemPurple
+        }
         navigationBar.barTintColor = UIColor.systemBlue
     }
     

@@ -125,7 +125,7 @@ FrameCollectorDelegate, HTTPHandlerDelegate {
         case .failed(let error):
             handleError(error)
         case .viability(let isViable):
-            broadcast(event: .viablityChanged(isViable))
+            broadcast(event: .viabilityChanged(isViable))
         case .shouldReconnect(let status):
             broadcast(event: .reconnectSuggested(status))
         case .receive(let data):
@@ -157,6 +157,12 @@ FrameCollectorDelegate, HTTPHandlerDelegate {
             canSend = true
             mutex.signal()
             compressionHandler?.load(headers: headers)
+            if let url = request.url {
+                HTTPCookie.cookies(withResponseHeaderFields: headers, for: url).forEach {
+                    HTTPCookieStorage.shared.setCookie($0)
+                }
+            }
+
             broadcast(event: .connected(headers))
         case .failure(let error):
             handleError(error)

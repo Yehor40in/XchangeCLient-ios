@@ -40,7 +40,7 @@ final class NetworkingManager: NSObject, NetworkManaging {
     var notifyQueue = DispatchQueue.main
     
     var buffer: Data?
-    var location: CLLocationCoordinate2D?
+    var location: CLLocationCoordinate2D = CLLocationCoordinate2D(latitude: 54.344, longitude: 56.6777)
     var contacts = [FetchedContact]()
     
     internal var serverURL: URL?
@@ -72,12 +72,13 @@ final class NetworkingManager: NSObject, NetworkManaging {
     
     func setupLocationManager() {
         locationManager.requestAlwaysAuthorization()
+        locationManager.requestWhenInUseAuthorization()
         
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
         locationManager.distanceFilter = kCLHeadingFilterNone
         
-        locationManager.delegate = self
         locationManager.startUpdatingLocation()
+        locationManager.delegate = self
     }
     
     private func processMessage(_ message: [String: Any], _ client: WebSocket) -> Void {
@@ -109,8 +110,8 @@ final class NetworkingManager: NSObject, NetworkManaging {
                         "type": "ios"
                     ],
                     "command_parameters" : [
-                        "location_latitude" : location?.latitude.description,
-                        "location_longitude" : location?.longitude.description,
+                        "location_latitude" : location.latitude.description,
+                        "location_longitude" : location.longitude.description,
                         "request_user_id" : "1234567"
                     ],
                     //"identifier": UIDevice.current.identifierForVendor!.uuidString
@@ -209,20 +210,22 @@ final class NetworkingManager: NSObject, NetworkManaging {
 
 // MARK: - CaptureVideoDataOutputSampleBufferDelegate
 
-extension NetworkingManager {
-    func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) -> Data? {
-        
+extension NetworkingManager: AVCaptureVideoDataOutputSampleBufferDelegate {
+    private func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) -> Data? {
+        print("0")
         if let imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) {
             CVPixelBufferLockBaseAddress(imageBuffer, CVPixelBufferLockFlags(rawValue: 0))
-            
+            print("1")
             let bytesPerRow = CVPixelBufferGetBytesPerRow(imageBuffer)
             let height = CVPixelBufferGetHeight(imageBuffer)
             let src_buff = CVPixelBufferGetBaseAddress(imageBuffer)
-            
+            print("3")
             let data = NSData(bytes: src_buff, length: bytesPerRow * height) as Data
             CVPixelBufferUnlockBaseAddress(imageBuffer, CVPixelBufferLockFlags(rawValue: 0))
             
             buffer = data
+        } else {
+            print("nahui")
         }
         return nil
     }
@@ -266,12 +269,11 @@ extension NetworkingManager: WebSocketDelegate {
             
         case let .error(error):
             print("\n\nError: \(error.debugDescription)\n\n")
-            
-        case let .viablityChanged(msg):
-            print("\(msg) 1")
-            
+
         case let .reconnectSuggested(msg):
             print("\(msg) 2")
+        default:
+            print("Default")
         }
     }
     
@@ -286,12 +288,16 @@ extension NetworkingManager: CLLocationManagerDelegate {
     }
     
     func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
-        if status == .authorizedAlways {
+        if status == .authorizedAlways || status == .authorizedWhenInUse {
             if CLLocationManager.isMonitoringAvailable(for: CLBeaconRegion.self) {
                 if CLLocationManager.isRangingAvailable() {
                     locationManager.requestLocation()
                 }
             }
         }
+    }
+    
+    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+        print(error.localizedDescription)
     }
 }

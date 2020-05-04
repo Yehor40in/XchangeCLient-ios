@@ -16,7 +16,6 @@
 		542143B423FCBF7200B30E16 /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 542143B323FCBF7200B30E16 /* MainViewController.swift */; };
 		542143B623FCD02200B30E16 /* MenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 542143B523FCD02200B30E16 /* MenuView.swift */; };
 		549F7A0523FD91E500645E5E /* NetworkingManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 549F7A0423FD91E500645E5E /* NetworkingManager.swift */; };
-		5B127C1E6E5848FDF8DE6989 /* Pods_Xchange.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4EDE80C19974428074B6F898 /* Pods_Xchange.framework */; };
 		741C840B240667F2000F4AD4 /* CaptureManaging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 741C840A240667F2000F4AD4 /* CaptureManaging.swift */; };
 		741C840E24066A2F000F4AD4 /* NetworkManaging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 741C840D24066A2F000F4AD4 /* NetworkManaging.swift */; };
 		741C841024066BD4000F4AD4 /* LogManaging.swift in Sources */ = {isa = PBXBuildFile; fileRef = 741C840F24066BD4000F4AD4 /* LogManaging.swift */; };
@@ -26,10 +25,23 @@
 		7473E3B023FEA9DC005CFBA9 /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7473E3AF23FEA9DC005CFBA9 /* Config.swift */; };
 		7473E3B223FEBE73005CFBA9 /* LogCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7473E3B123FEBE73005CFBA9 /* LogCell.swift */; };
 		7473E3B423FEC033005CFBA9 /* ConcreteLogItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7473E3B323FEC033005CFBA9 /* ConcreteLogItem.swift */; };
+		D6AD5C069720230695989A2A /* libPods-Xchange.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 64D264A86428F1CF68CA8091 /* libPods-Xchange.a */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXCopyFilesBuildPhase section */
+		54775DC5246042AE005CB8D4 /* Embed Frameworks */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 10;
+			files = (
+			);
+			name = "Embed Frameworks";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
-		4EDE80C19974428074B6F898 /* Pods_Xchange.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Xchange.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		5421439823FCBB2800B30E16 /* Xchange.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Xchange.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		5421439B23FCBB2800B30E16 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		5421439D23FCBB2800B30E16 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -40,7 +52,9 @@
 		542143B123FCBD5E00B30E16 /* CaptureManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureManager.swift; sourceTree = "<group>"; };
 		542143B323FCBF7200B30E16 /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
 		542143B523FCD02200B30E16 /* MenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MenuView.swift; sourceTree = "<group>"; };
+		54775DC2246042AE005CB8D4 /* Starscream.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; path = Starscream.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		549F7A0423FD91E500645E5E /* NetworkingManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkingManager.swift; sourceTree = "<group>"; };
+		64D264A86428F1CF68CA8091 /* libPods-Xchange.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Xchange.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		741C840A240667F2000F4AD4 /* CaptureManaging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CaptureManaging.swift; sourceTree = "<group>"; };
 		741C840D24066A2F000F4AD4 /* NetworkManaging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkManaging.swift; sourceTree = "<group>"; };
 		741C840F24066BD4000F4AD4 /* LogManaging.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LogManaging.swift; sourceTree = "<group>"; };
@@ -59,7 +73,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5B127C1E6E5848FDF8DE6989 /* Pods_Xchange.framework in Frameworks */,
+				D6AD5C069720230695989A2A /* libPods-Xchange.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -102,7 +116,8 @@
 		6F628D14CB056DD81F904767 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				4EDE80C19974428074B6F898 /* Pods_Xchange.framework */,
+				54775DC2246042AE005CB8D4 /* Starscream.framework */,
+				64D264A86428F1CF68CA8091 /* libPods-Xchange.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -178,7 +193,7 @@
 				5421439423FCBB2800B30E16 /* Sources */,
 				5421439523FCBB2800B30E16 /* Frameworks */,
 				5421439623FCBB2800B30E16 /* Resources */,
-				6BAFA48CCA22CCAF800E8F6A /* [CP] Embed Pods Frameworks */,
+				54775DC5246042AE005CB8D4 /* Embed Frameworks */,
 			);
 			buildRules = (
 			);
@@ -236,28 +251,6 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		6BAFA48CCA22CCAF800E8F6A /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-Xchange/Pods-Xchange-frameworks.sh",
-				"${BUILT_PRODUCTS_DIR}/Starscream/Starscream.framework",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Starscream.framework",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Xchange/Pods-Xchange-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
 		F2430EFAEE1BC05D2AF714DE /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -377,7 +370,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.3;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -431,7 +424,7 @@
 				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.2;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.3;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				SDKROOT = iphoneos;
@@ -447,7 +440,9 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 9YW6XKYDCR;
 				INFOPLIST_FILE = Xchange/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.3;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -465,7 +460,9 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 9YW6XKYDCR;
 				INFOPLIST_FILE = Xchange/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.3;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
