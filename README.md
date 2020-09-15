@@ -3,6 +3,7 @@ This is iOS client for to use together with server (url: https://github.com/Yeho
 
 # Description
 Xchange provides you with the ability to remote control your phone (with having this app installed on it), get contacts list, obtain a live stream from camera and location in the world.
+As for now it only works on localhost within your local network.
 
 
 # Usage
